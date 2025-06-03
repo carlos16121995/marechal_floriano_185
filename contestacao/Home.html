@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contestação de Vistoria de Saída do Imóvel - Evidências Fotográficas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        .titulo-comparativo {
+            text-align: center;
+            width: 100%; /* Garante que o título ocupe a largura total */
+            margin-bottom: 20px; /* Espaço abaixo do título */
+            position: relative; /* Para posicionar a tag (Contestado/Deferido) */
+        }
+
+        .tag-status {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -150%); /* Posiciona acima e centralizado no título */
+            font-weight: bold;
+            font-size: 1.1em; /* Ajuste o tamanho conforme necessário */
+        }
+
+            .tag-status.contestado {
+                color: red;
+            }
+
+            .tag-status.deferido {
+                color: green;
+            }
+
+        .comparativo-lado-a-lado {
+            display: flex;
+            justify-content: space-between; /* Espaço entre as duas partes */
+            gap: 20px; /* Espaço entre as colunas (opcional, para navegadores mais novos) */
+            width: 100%; /* Garante que o container ocupe a largura total */
+            margin-bottom: 30px; /* Espaço abaixo das imagens */
+        }
+
+            .comparativo-lado-a-lado > div {
+                width: 50%; /* Cada lado ocupa metade da largura do container */
+            }
+
+            .comparativo-lado-a-lado img {
+                width: 100%;
+                /* max-width: 400px; Ajuste conforme necessário */
+                height: auto;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: transform 0.3s ease;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                margin-bottom: 10px; /* Espaço entre a imagem e a descrição */
+            }
+
+                .comparativo-lado-a-lado img:hover {
+                    transform: scale(1.02);
+                }
+
+            .comparativo-lado-a-lado .descricao-comparativo {
+                font-size: 16px;
+                line-height: 1.6;
+                color: #444;
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: auto;
+            background: #fff;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            border-top: 5px solid #007bff; /* Detalhe em azul para seriedade */
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #222;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 20px;
+            color: #555;
+            font-weight: 300;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #007bff;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .image-item {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 15px; /* Espaço para a legenda */
+        }
+
+            .image-item:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            }
+
+            .image-item img {
+                width: 100%;
+                height: 500px; /* Altura fixa para as imagens */
+                object-fit: cover; /* Garante que a imagem preencha o espaço sem distorção */
+                display: block;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+            }
+
+        .caption {
+            padding: 15px 10px 0;
+            font-size: 15px;
+            color: #666;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        .description {
+            font-size: 17px;
+            color: #444;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+            .description p {
+                margin-bottom: 15px;
+            }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 60px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9);
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px; /* Borda para a imagem ampliada */
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        /* Modificado para o estilo de lista de itens da contestação */
+        .contest-list {
+            list-style: none; /* Remove o marcador padrão */
+            padding: 0;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+            .contest-list li {
+                position: relative;
+                padding-left: 30px; /* Espaço para o checkmark */
+                margin-bottom: 10px;
+                font-size: 16px;
+                color: #444;
+            }
+
+                .contest-list li::before {
+                    content: '✅'; /* O checkmark */
+                    position: absolute;
+                    left: 0;
+                    color: #28a745; /* Cor verde para o checkmark */
+                    font-size: 18px;
+                    top: 0;
+                }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 45px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #bbb;
+                text-decoration: none;
+            }
+
+        .legal-citation {
+            font-style: italic;
+            margin-top: 10px;
+            font-size: 15px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .image-item img {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Contestação Formal de Vistoria de Saída</h1>
+            <h2>Exigência de pintura e outros itens</h2>
+        </header>
+
+        <p class="description">
+            Prezados(as) responsáveis,
+        </p>
+        <p class="description">
+            Na qualidade de locatário, venho, respeitosamente, apresentar a presente contestação à vistoria de saída, especialmente no que tange à exigência de pintura do imóvel e outros reparos, com base na legislação vigente, entendimento consolidado dos Tribunais e na vistoria de entrada do imóvel, conforme se passa a expor.
+        </p>
+        <h3 class="section-title">I - Fundamentação Jurídica</h3>
+        <p class="description">
+            Nos termos do <strong>artigo 23, inciso III, da Lei nº 8.245/1991</strong> (Lei do Inquilinato), o locatário tem a obrigação de restituir o imóvel <strong>no estado em que o recebeu</strong>, ressalvado o <strong>desgaste natural decorrente do uso regular</strong> do bem.
+        </p>
+        <p class="description">
+            No caso em tela, a exigência da imobiliária para que eu realize a <strong>pintura de paredes, muros e outros itens não encontra respaldo legal</strong>, pois:
+        </p>
+        <ul class="contest-list">
+            <li>Trata-se de desgaste natural advindo do uso normal do imóvel e da sua exposição ao tempo;</li>
+            <li>Não há qualquer comprovação de que os danos existentes extrapolem a normalidade ou se qualifiquem como resultado de mau uso ou negligência por parte do locatário;</li>
+            <li>A vistoria de entrada já registrava, em diversos pontos, manchas e pequenos sinais de uso.</li>
+        </ul>
+
+        <p class="description">
+            O entendimento majoritário dos Tribunais é cristalino no sentido de que a obrigação de devolver o imóvel <strong>com pintura nova</strong> é considerada <strong>nula de pleno direito</strong>, por constituir cláusula <strong>abusiva</strong>.
+        </p>
+        <p class="description">
+            Cito, por oportuno, o julgado paradigmático
+        </p>
+
+        <p class="description">
+            Cito, por oportuno, o julgado paradigmático
+        </p>
+
+        <p class="legal-citation">"Locador responde com exclusividade pelo desgaste resultante do uso normal do imóvel e, em face de preceito de natureza cogente, nula de pleno direito é cláusula contratual que imponha ao inquilino a obrigação de restituir o bem com pintura nova."</p>
+        <p class="legal-citation">(TJ-SP - AC: 1011240-81.2019.8.26.0008, Relator: Celso Pimentel, Julgado em 12/03/2021).</p>
+
+        <p>Esse entendimento visa coibir o <strong>enriquecimento ilícito</strong> do locador, assegurando que o locatário <strong>não seja penalizado por danos que decorrem do tempo e da regular utilização do imóvel.</strong></p>
+
+        <p>Além disso, deve-se observar o princípio basilar das relações de consumo, consagrado no <strong>artigo 6º, inciso IV, do Código de Defesa do Consumidor</strong>, que veda cláusulas que coloquem o consumidor em <strong>desvantagem excessiva</strong> ou contrariem a <strong>boa-fé objetiva.</strong></p>
+
+        <h3 class="section-title">II - Análises dos itens da vistoria de saída</h3>
+
+        <div class="image-gallery">
+            <div class="titulo-comparativo-container">
+                <div class="titulo-comparativo">
+                    <span class="tag-status contestado">Contestado</span> <h3>1 Área externa / Frente - 1.3 Muro</h3>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/muro/23-10-2024-muro-1.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/muro/30-05-2025-muro-1.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/muro/30-05-2025-muro-1.2.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/muro/23-10-2024-muro-2.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/muro/30-05-2025-muro-2.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/muro/23-10-2024-muro-2.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/muro/30-05-2025-muro-2.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/muro/23-10-2024-muro-3.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/muro/30-05-2025-muro-3.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/muro/23-10-2024-muro-4.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/muro/30-05-2025-muro-4.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/muro/23-10-2024-muro-5.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/muro/30-05-2025-muro-5.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="description">
+            <strong>Contestação:</strong> Desgaste natural pela ação do tempo. A exigência de pintura não é de responsabilidade do locatário.
+        </p>
+
+        <div class="image-gallery">
+            <div class="titulo-comparativo-container">
+                <div class="titulo-comparativo">
+                    <span class="tag-status contestado">Contestado</span> <h3>1 Área externa / Frente - 1.6 Parede externa</h3>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-externa/23-10-2024-parede-externa-1.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-externa/30-05-2025-parede-externa-1.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-externa/23-10-2024-parede-externa-2.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-externa/30-05-2025-parede-externa-2.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-externa/23-10-2024-parede-externa-3.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-externa/30-05-2025-parede-externa-3.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-externa/23-10-2024-parede-externa-4.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-externa/30-05-2025-parede-externa-4.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="description">
+            <strong>Contestação:</strong> A vistoria de entrada já indicava leves manchas
+        </p>
+        <p class="legal-citation">"Em bom estado, pintura acrílico semibrilho e textura , na cor branco gelo e cinza , se encontra com pintura nova. Parede da janela do quarto com leves manchas, com numeração completa, com dois ganchos, uma tomada funcionando."</p>
+        <p class="legal-citation">"Vistoria de entrada(1.6 - Parede Externa)"</p>
+        <p class="description">
+            <strong>O que será Feito:</strong> Será colocado tampo na saida de ar. A pintura será feita no local dos furos.
+        </p>
+
+        <div class="image-gallery">
+            <div class="titulo-comparativo-container">
+                <div class="titulo-comparativo">
+                    <span class="tag-status contestado">Contestado</span> <h3>2 Sala / Cozinha - 2.2 Parede</h3>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/23-10-2024-parede-sala-cozinha-1.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/30-05-2025-parede-sala-cozinha-1.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/23-10-2024-parede-sala-cozinha-2.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/30-05-2025-parede-sala-cozinha-2.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/23-10-2024-parede-sala-cozinha-3.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/30-05-2025-parede-sala-cozinha-3.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/23-10-2024-parede-sala-cozinha-4.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/30-05-2025-parede-sala-cozinha-4.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/23-10-2024-parede-sala-cozinha-5.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/30-05-2025-parede-sala-cozinha-5.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                        <p class="caption">
+                            No dia 26/10/2025, foi aberta uma contestação referente a uma infiltração na parede da sala/cozinha. Em resposta, um profissional compareceu ao local, limitando-se a realizar o lixamento da bolha de água e a aplicação de massa corrida na área afetada, sem, contudo, proceder com a devida pintura.
+                        </p>
+                        <p class="caption">
+                            No momento da desocupação do imóvel, ao remover o armário que permanecia encostado nessa parede, constatou-se a presença de mofo e a pintura completamente deteriorada, evidenciando um problema estrutural preexistente no imóvel.
+                        </p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/23-10-2024-parede-sala-cozinha-6.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-sala-cozinha/30-05-2025-parede-sala-cozinha-6.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+
+
+                <p class="description">
+                    <strong>Contestação:</strong> Contestação: Manchas típicas de desgaste natural.
+                </p>
+
+
+            </div>
+        </div>
+
+        <div class="image-gallery">
+            <div class="titulo-comparativo-container">
+                <div class="titulo-comparativo">
+                    <span class="tag-status contestado">Contestado</span> <h3>2 Sala / Cozinha - 2.4 Teto</h3>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/teto-sala-cozinha/23-10-2024-teto-sala-cozinha-1.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/teto-sala-cozinha/30-05-2025-teto-sala-cozinha-1.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/teto-sala-cozinha/23-10-2024-teto-sala-cozinha-2.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/teto-sala-cozinha/30-05-2025-teto-sala-cozinha-2.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <p class="description">
+                    <strong>Contestação:</strong> As manchas presentes são decorrentes de goteiras, configurando vício estrutural que não é de minha responsabilidade. Inclusive, já na vistoria de entrada é possível observar a existência de algumas manchas no local.
+                    No dia 11/12/2024, foi aberto um chamado para reparo do ventilador, que parou de funcionar após as chuvas. Em atendimento à solicitação, um técnico compareceu ao imóvel, realizou a remoção do ventilador e efetuou a substituição por um plafon.
+                </p>
+            </div>
+        </div>
+
+        <div class="image-gallery">
+            <div class="titulo-comparativo-container">
+                <div class="titulo-comparativo">
+                    <span class="tag-status contestado">Contestado</span> <h3>2 Sala / Cozinha - 2.6 Porta / Acesso Fundos</h3>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/porta-fundo/23-10-2024-porta-fundo-1.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/porta-fundo/30-05-2025-porta-fundo-1.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <p class="description">
+                    <strong>Contestação:</strong> A borracha já estava solta desde o início da locação.
+
+                </p>
+            </div>
+        </div>
+
+        <div class="image-gallery">
+            <div class="titulo-comparativo-container">
+                <div class="titulo-comparativo">
+                    <span class="tag-status contestado">Contestado</span> <h3>3 Corredor - 3.2 Parede</h3>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/corredor/23-10-2024-corredor-1.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/corredor/30-05-2025-corredor-1.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/corredor/23-10-2024-corredor-2.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/corredor/30-05-2025-corredor-2.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/corredor/23-10-2024-corredor-3.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/corredor/30-05-2025-corredor-3.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/corredor/23-10-2024-corredor-4.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/corredor/30-05-2025-corredor-4.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <p class="description">
+                    <strong>Contestação:</strong> Contestação: Manchas típicas de desgaste natural.
+
+                </p>
+            </div>
+        </div>
+
+        <div class="image-gallery">
+            <div class="titulo-comparativo-container">
+                <div class="titulo-comparativo">
+                    <span class="tag-status contestado">Contestado</span> <h3>4 Quarto / Frente - 4.2 Parede</h3>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/23-10-2024-parede-quarto-frente-1.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/30-05-2025-parede-quarto-frente-1.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/23-10-2024-parede-quarto-frente-2.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/30-05-2025-parede-quarto-frente-2.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/23-10-2024-parede-quarto-frente-3.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/30-05-2025-parede-quarto-frente-3.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/23-10-2024-parede-quarto-frente-4.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/30-05-2025-parede-quarto-frente-4.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+
+                        <p class="caption">Será pintado juntamente com os buracos tapados do ar condicionado.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/23-10-2024-parede-quarto-frente-5.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/30-05-2025-parede-quarto-frente-5.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/23-10-2024-parede-quarto-frente-6.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-frente/30-05-2025-parede-quarto-frente-6.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                        <p class="caption">Será pintado.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p class="description">
+            <strong>Contestação:</strong> Contestação: Manchas típicas de desgaste natural.
+        </p>
+
+        <div class="image-gallery">
+            <div class="titulo-comparativo-container">
+                <div class="titulo-comparativo">
+                    <span class="tag-status contestado">Contestado</span> <h3>5 Quarto / Fundos - 5.2 Parede</h3>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/23-10-2024-parede-quarto-fundo-1.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/30-05-2025-parede-quarto-fundo-1.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/23-10-2024-parede-quarto-fundo-2.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/30-05-2025-parede-quarto-fundo-2.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/23-10-2024-parede-quarto-fundo-3.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/30-05-2025-parede-quarto-fundo-3.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/23-10-2024-parede-quarto-fundo-4.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/30-05-2025-parede-quarto-fundo-4.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/23-10-2024-parede-quarto-fundo-5.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/30-05-2025-parede-quarto-fundo-5.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/23-10-2024-parede-quarto-fundo-6.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-quarto-fundo/30-05-2025-parede-quarto-fundo-6.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <p class="description">
+                    <strong>Contestação:</strong> Manchas típicas de uso normal.
+                </p>
+            </div>
+        </div>
+
+        <div class="image-gallery">
+            <div class="titulo-comparativo-container">
+                <div class="titulo-comparativo">
+                    <span class="tag-status contestado">Contestado</span> <h3>6 Banheiro - 6.8 Troca de torre com vazamento</h3>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/banheiro/30-05-2025-banheiro-1.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                        <p class="caption">
+                            <strong>Contestação:</strong>
+                            O item referente ao reparo do vaso sanitário, especificamente a troca da torre de saída/obturador, não foi registrado ou documentado por meio de fotografias na vistoria de entrada. Dessa forma, não há comprovação de que, no momento da entrega do imóvel, esse item estivesse em perfeito estado de funcionamento.
+
+                            Portanto, não é possível imputar a mim a responsabilidade por esse reparo, tendo em vista que não ficou caracterizado o estado pré-existente do equipamento. Ressalto que, conforme o princípio da boa-fé e da vedação ao enriquecimento sem causa, não cabe ao locatário arcar com danos ou desgastes que não foram formalmente registrados na vistoria inicial.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="image-gallery">
+            <div class="titulo-comparativo-container">
+                <div class="titulo-comparativo">
+                    <span class="tag-status contestado">Contestado</span> <h3>7 Área externa / Fundos - 7.1 Parede </h3>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-fundo/23-10-2024-parede-fundo-1.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-fundo/30-05-2025-parede-fundo-1.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-fundo/23-10-2024-parede-fundo-2.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-fundo/30-05-2025-parede-fundo-2.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-fundo/23-10-2024-parede-fundo-3.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-fundo/30-05-2025-parede-fundo-3.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-fundo/23-10-2024-parede-fundo-4.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-fundo/30-05-2025-parede-fundo-4.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-fundo/23-10-2024-parede-fundo-5.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-fundo/30-05-2025-parede-fundo-5.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-fundo/23-10-2024-parede-fundo-6.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-fundo/30-05-2025-parede-fundo-6.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-fundo/23-10-2024-parede-fundo-7.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                    <div class="image-item">
+                        <img src="images/parede-fundo/30-05-2025-parede-fundo-7.jpeg" alt="Descrição da Imagem Direita" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Saída:** 30/05/2025.</p>
+                    </div>
+                </div>
+                <div class="comparativo-lado-a-lado">
+                    <div class="image-item">
+                        <img src="images/parede-fundo/23-10-2024-parede-fundo-8.jpeg" alt="Descrição da Imagem Esquerda" onclick="openModal(this)">
+                        <p class="caption">**Vistoria de Entrada:** 23/10/2024.</p>
+                    </div>
+                </div>
+                <p class="description"><strong>Contestação:</strong>Desgaste natural da exposição ao tempo. A própria vistoria de entrada já indicava manchas e rachaduras.</p>
+                <p class="legal-citation">"Em bom estado. Com manchas e rachaduras, uma prateleira de mármore em bom estado, uma tomada dupla funcionando, com parte em grade com varais."</p>
+                <p class="legal-citation">"Vistoria de entrada(7.6 - Muro)"</p>
+            </div>
+        </div>
+
+        <ul style="list-style-type: none; padding-left: 0;">
+            <li>1.4 Piso: <strong style="color: green;">Limpar Será Providenciado</strong></li>
+            <li>1.6 Parede Externa: <strong style="color: green;">Pintar Será Providenciado</strong> (Em partes)</li>
+            <li>2.2 Parede: <strong style="color: green;">Tomadas sujas Será Providenciado</strong></li>
+            <li>2.3 Piso: <strong style="color: green;">Limpar Será Providenciado</strong></li>
+            <li>3.3 Piso: <strong style="color: green;">Limpar Será Providenciado</strong></li>
+            <li>4.2 Parede: <strong style="color: green;">Pintar Será Providenciado</strong> (Em partes)</li>
+            <li>4.3 Piso: <strong style="color: green;">Limpar Será Providenciado</strong></li>
+            <li>5.3 Piso: <strong style="color: green;">Limpar Será Providenciado</strong></li>
+            <li>6.3 Piso: <strong style="color: green;">Limpar Será Providenciado</strong></li>
+            <li>6.6 Box do Banheiro: <strong style="color: green;">Limpar Será Providenciado</strong></li>
+            <li>6.7 Ducha com vazamento: <strong style="color: green;">Será Providenciado</strong></li>
+            <li>6.10 Acessórios de Banheiro: <strong style="color: green;">Repor Será Providenciado</strong></li>
+            <li>7.2 Piso: <strong style="color: green;">Limpar Será Providenciado</strong></li>
+        </ul>
+
+        <h3 class="section-title">III - Conclusão</h3>
+
+        <p class="description">Diante do exposto, REQUER:</p>
+        <ol style="margin-left: 20px;">
+            <li>O reconhecimento de que a exigência de <strong>pintura geral</strong> do imóvel <strong>não é de responsabilidade</strong> do locatário, visto tratar-se de <strong>desgaste natural</strong> e <strong>uso regular</strong>, conforme previsto na <strong>Lei do Inquilinato</strong> e na <strong>jurisprudência dominante;</strong></li>
+            <li>Que sejam considerados os apontamentos da <strong>vistoria de entrada</strong>, que já evidenciavam alguns sinais de desgaste e uso</li>;
+            <li>Que os reparos de limpeza e pequenos ajustes, conforme acima descritos, <strong>serão devidamente providenciados</strong> pelo locatário, demonstrando sua <strong>boa-fé</strong>.</li>
+        </ol>
+
+        <p> Por fim, reforço que o locatário não se exime das obrigações que lhe são legalmente atribuídas, mas <strong>repudia qualquer tentativa de imputação de responsabilidades que extrapolem o razoável</strong> ou que tenham como base a ideia equivocada de que o imóvel deva ser entregue como se fosse novo. </p>
+
+        <p> Termos em que, pede deferimento. </p>
+
+        <p class="description" style="text-align: right; margin-top: 40px;">
+            Atenciosamente,<br>
+            Carlos Eduardo Silva de Alcântara<br>
+            Inquilino<br>
+            02 de Junho de 2025
+        </p>
+    </div>
+
+    <div id="myModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+    <script>
+            function openModal(imgElement) {
+                const modal = document.getElementById('myModal');
+                const modalImg = document.getElementById('modalImg');
+                modal.style.display = "block";
+                modalImg.src = imgElement.src;
+            }
+
+            function closeModal() {
+                const modal = document.getElementById('myModal');
+                modal.style.display = "none";
+            }
+
+            // Fecha o modal se clicar fora da imagem
+            window.onclick = function (event) {
+                const modal = document.getElementById('myModal');
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+    </script>
+
+</body>
+</html>
